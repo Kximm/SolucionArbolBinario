@@ -1,0 +1,199 @@
+﻿@page "/"
+@using ArbolBinario.Models
+@using ArbolBinario.Services
+@inject ArbolBinarioService ArbolService
+
+<h3>Árbol Binario</h3>
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" class="form-control" @bind="infoNodoRaiz" placeholder="Nodo Raíz" aria-label="Nodo Raíz" aria-describedby="button-addon2">
+                <button class="btn btn-outline-primary" type="button" id="button-addon2" @onclick="CrearNodoRaiz">Crear Nodo Raíz</button>
+            </div>
+        </div>
+    </div>
+
+    @if (ArbolService.NodoRaiz != null)
+    {
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" @bind="infoNodoPadre" placeholder="Nodo Padre" aria-label="Nodo Padre">
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" @bind="infoNodoNuevo" placeholder="Nuevo Nodo" aria-label="Nuevo Nodo">
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" @bind="posicionNodoNuevo">
+                    <option value="Izquierda">Izquierda</option>
+                    <option value="Derecha">Derecha</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-primary" type="button" @onclick="AgregarNodo">Agregar Nodo</button>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <input type="text" class="form-control" @bind="infoNodoEliminar" placeholder="Nodo a Eliminar" aria-label="Nodo a Eliminar">
+            </div>
+            <div class="col-md-6 mt-2">
+                <button class="btn btn-outline-danger" type="button" @onclick="EliminarNodo">Eliminar Nodo</button>
+            </div>
+        </div>
+        <h1>Recorridos Recursivos</h1>
+        <div>
+            <h4>Recorrido Preorden</h4>
+            <ul>
+                @foreach (var nodo in recorridoPreordenRecursivo)
+                {
+                    <li>@nodo</li>
+                }
+            </ul>
+        </div>
+        <div>
+            <h4>Recorrido Inorden</h4>
+            <ul>
+                @foreach (var nodo in recorridoInordenRecursivo)
+                {
+                    <li>@nodo</li>
+                }
+            </ul>
+        </div>
+        <div>
+            <h4>Recorrido Postorden</h4>
+            <ul>
+                @foreach (var nodo in recorridoPostordenRecursivo)
+                {
+                    <li>@nodo</li>
+                }
+            </ul>
+        </div>
+
+        <h1>Recorridos Iterativos</h1>
+        <div>
+            <h4>Recorrido Preorden</h4>
+            <ul>
+                @foreach (var nodo in recorridoPreordenIterativo)
+                {
+                    <li>@nodo</li>
+                }
+            </ul>
+        </div>
+        <div>
+            <h4>Recorrido Inorden</h4>
+            <ul>
+                @foreach (var nodo in recorridoInordenIterativo)
+                {
+                    <li>@nodo</li>
+                }
+            </ul>
+        </div>
+        <div>
+            <h4>Recorrido Postorden</h4>
+            <ul>
+                @foreach (var nodo in recorridoPostordenIterativo)
+                {
+                    <li>@nodo</li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+@code {
+    private string? infoNodoRaiz;
+    private string infoNodoPadre;
+    private string infoNodoNuevo;
+    private string infoNodoEliminar;
+    private string posicionNodoNuevo = "Izquierda";
+    private List<string> recorridoPreordenRecursivo = new();
+    private List<string> recorridoInordenRecursivo = new();
+    private List<string> recorridoPostordenRecursivo = new();
+    private List<string> recorridoPreordenIterativo = new();
+    private List<string> recorridoInordenIterativo = new();
+    private List<string> recorridoPostordenIterativo = new();
+
+    private void CrearNodoRaiz()
+    {
+        if (!string.IsNullOrEmpty(infoNodoRaiz))
+        {
+            ArbolService.NodoRaiz = ArbolService.CrearNodo(infoNodoRaiz);
+            ActualizarRecorridosRecursivos();
+            ActualizarRecorridosIterativos();
+        }
+    }
+
+    private void AgregarNodo()
+    {
+        if (ArbolService.NodoRaiz != null && !string.IsNullOrEmpty(infoNodoPadre) && !string.IsNullOrEmpty(infoNodoNuevo))
+        {
+            NodoArbol? nodoPadre = BuscarNodo(ArbolService.NodoRaiz, infoNodoPadre);
+            if (nodoPadre != null)
+            {
+                if (posicionNodoNuevo == "Izquierda")
+                {
+                    nodoPadre.RamaIzquierda = ArbolService.CrearNodo(infoNodoNuevo);
+                }
+                else
+                {
+                    nodoPadre.RamaDerecha = ArbolService.CrearNodo(infoNodoNuevo);
+                }
+                ActualizarRecorridosRecursivos();
+                ActualizarRecorridosIterativos();
+            }
+        }
+    }
+
+    private NodoArbol? BuscarNodo(NodoArbol? nodo, string info)
+    {
+        if (nodo == null) return null;
+        if (nodo.Informacion == info) return nodo;
+
+        NodoArbol? encontrado = BuscarNodo(nodo.RamaIzquierda, info);
+        if (encontrado == null)
+        {
+            encontrado = BuscarNodo(nodo.RamaDerecha, info);
+        }
+        return encontrado;
+    }
+
+    private void EliminarNodo()
+    {
+        if (ArbolService.NodoRaiz != null && !string.IsNullOrEmpty(infoNodoEliminar))
+        {
+            ArbolService.EliminarNodo(infoNodoEliminar);
+            ActualizarRecorridosRecursivos();
+            ActualizarRecorridosIterativos();
+        }
+    }
+
+    private void ActualizarRecorridosRecursivos()
+    {
+        recorridoPreordenRecursivo.Clear();
+        recorridoInordenRecursivo.Clear();
+        recorridoPostordenRecursivo.Clear();
+
+        if (ArbolService.NodoRaiz != null)
+        {
+            ArbolService.RecorridoPreorden(ArbolService.NodoRaiz, recorridoPreordenRecursivo);
+            ArbolService.RecorridoInorden(ArbolService.NodoRaiz, recorridoInordenRecursivo);
+            ArbolService.RecorridoPostorden(ArbolService.NodoRaiz, recorridoPostordenRecursivo);
+        }
+    }
+
+    private void ActualizarRecorridosIterativos()
+    {
+        recorridoPreordenIterativo.Clear();
+        recorridoInordenIterativo.Clear();
+        recorridoPostordenIterativo.Clear();
+
+        if (ArbolService.NodoRaiz != null)
+        {
+            ArbolService.RecorridoPreordenIterativo(ArbolService.NodoRaiz, recorridoPreordenIterativo);
+            ArbolService.RecorridoInordenIterativo(ArbolService.NodoRaiz, recorridoInordenIterativo);
+            ArbolService.RecorridoPostordenIterativo(ArbolService.NodoRaiz, recorridoPostordenIterativo);
+        }
+    }
+}
