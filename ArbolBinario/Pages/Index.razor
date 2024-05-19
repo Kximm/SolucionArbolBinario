@@ -3,16 +3,22 @@
 @using ArbolBinario.Services
 @inject ArbolBinarioService ArbolService
 
-<h3>Árbol Binario</h3>
+<center>
+    <h2 style="color: #B002A0;">Árbol Binario</h2>
+</center>
+
+
 
 <div class="container">
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <div class="input-group">
-                <input type="text" class="form-control" @bind="infoNodoRaiz" placeholder="Nodo Raíz" aria-label="Nodo Raíz" aria-describedby="button-addon2">
-                <button class="btn btn-outline-primary" type="button" id="button-addon2" @onclick="CrearNodoRaiz">Crear Nodo Raíz</button>
-            </div>
+    <div class="row mb-3"> 
+        <center>
+        <div class="col-md-5">
+           <center>              
+                    <input type="text" class="form-control" @bind="infoNodoRaiz" placeholder="Nodo Raíz" aria-label="Nodo Raíz" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-primary" type="button" id="button-addon2" @onclick="CrearNodoRaiz">Crear Nodo Raíz</button>
+           </center>   
         </div>
+        </center>
     </div>
 
     @if (ArbolService.NodoRaiz != null)
@@ -31,7 +37,7 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-outline-primary" type="button" @onclick="AgregarNodo">Agregar Nodo</button>
+                <button class="btn btn-outline-success" type="button" @onclick="AgregarNodo">Agregar Nodo</button>
             </div>
         </div>
         <div class="row mb-3">
@@ -42,65 +48,78 @@
                 <button class="btn btn-outline-danger" type="button" @onclick="EliminarNodo">Eliminar Nodo</button>
             </div>
         </div>
-        <h1>Recorridos Recursivos</h1>
-        <div>
-            <h4>Recorrido Preorden</h4>
-            <ul>
-                @foreach (var nodo in recorridoPreordenRecursivo)
-                {
-                    <li>@nodo</li>
-                }
-            </ul>
-        </div>
-        <div>
-            <h4>Recorrido Inorden</h4>
-            <ul>
-                @foreach (var nodo in recorridoInordenRecursivo)
-                {
-                    <li>@nodo</li>
-                }
-            </ul>
-        </div>
-        <div>
-            <h4>Recorrido Postorden</h4>
-            <ul>
-                @foreach (var nodo in recorridoPostordenRecursivo)
-                {
-                    <li>@nodo</li>
-                }
-            </ul>
-        </div>
 
-        <h1>Recorridos Iterativos</h1>
-        <div>
-            <h4>Recorrido Preorden</h4>
-            <ul>
-                @foreach (var nodo in recorridoPreordenIterativo)
-                {
-                    <li>@nodo</li>
-                }
-            </ul>
-        </div>
-        <div>
-            <h4>Recorrido Inorden</h4>
-            <ul>
-                @foreach (var nodo in recorridoInordenIterativo)
-                {
-                    <li>@nodo</li>
-                }
-            </ul>
-        </div>
-        <div>
-            <h4>Recorrido Postorden</h4>
-            <ul>
-                @foreach (var nodo in recorridoPostordenIterativo)
-                {
-                    <li>@nodo</li>
-                }
-            </ul>
-        </div>
+        @* RecorridosRecursivos *@
+        <button class="btn btn-outline-success" @onclick="ToggleRecorridos">Mostrar/Ocultar Recorridos </button>
+
+        @if (mostrarRecorridos)
+        {
+            <div>
+                <h1>Recorridos Recursivos</h1>
+                <div>
+                    <h4>Recorrido Preorden</h4>
+                    <ul>
+                        @foreach (var nodo in recorridoPreordenRecursivo)
+                        {
+                            <li>@nodo</li>
+                        }
+                    </ul>
+                </div>
+                <div>
+                    <h4>Recorrido Inorden</h4>
+                    <ul>
+                        @foreach (var nodo in recorridoInordenRecursivo)
+                        {
+                            <li>@nodo</li>
+                        }
+                    </ul>
+                </div>
+                <div>
+                    <h4>Recorrido Postorden</h4>
+                    <ul>
+                        @foreach (var nodo in recorridoPostordenRecursivo)
+                        {
+                            <li>@nodo</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            @* RecorridosIterativos  *@
+
+            <h1>Recorridos Iterativos</h1>
+            <div>
+                <h4>Recorrido Preorden</h4>
+                <ul>
+                    @foreach (var nodo in recorridoPreordenIterativo)
+                    {
+                        <li>@nodo</li>
+                    }
+                </ul>
+            </div>
+            <div>
+                <h4>Recorrido Inorden</h4>
+                <ul>
+                    @foreach (var nodo in recorridoInordenIterativo)
+                    {
+                        <li>@nodo</li>
+                    }
+                </ul>
+            </div>
+            <div>
+                <h4>Recorrido Postorden</h4>
+                <ul>
+                    @foreach (var nodo in recorridoPostordenIterativo)
+                    {
+                        <li>@nodo</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        
     }
-</div>
+    </div>
+
 
 @code {
     private string? infoNodoRaiz;
@@ -196,4 +215,11 @@
             ArbolService.RecorridoPostordenIterativo(ArbolService.NodoRaiz, recorridoPostordenIterativo);
         }
     }
+    private bool mostrarRecorridos = false;
+
+    private void ToggleRecorridos()
+    {
+        mostrarRecorridos = !mostrarRecorridos;
+    }
+    
 }

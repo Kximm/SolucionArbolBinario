@@ -1,0 +1,23 @@
+﻿@using ArbolBinario.Models
+<li>
+    <a>@Nodo.Informacion</a>
+    @if (Nodo.RamaIzquierda != null || Nodo.RamaDerecha != null)
+    {
+        <ul>
+            @if (Nodo.RamaIzquierda != null)
+            {
+                <TreeNode Nodo="Nodo.RamaIzquierda" />
+            }
+            @if (Nodo.RamaDerecha != null)
+            {
+                <TreeNode Nodo="Nodo.RamaDerecha" />
+            }
+        </ul>
+    }
+</li>
+
+@code {
+    [Parameter]
+    public NodoArbol Nodo { get; set; }
+}
+

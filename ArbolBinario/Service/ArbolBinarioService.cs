@@ -1,5 +1,6 @@
 ﻿using ArbolBinario.Models;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ArbolBinario.Services
 {
@@ -48,6 +49,7 @@ namespace ArbolBinario.Services
             recorrido.Add(nodo.Informacion);
             RecorridoPreorden(nodo.RamaIzquierda, recorrido);
             RecorridoPreorden(nodo.RamaDerecha, recorrido);
+          
         }
 
         public void RecorridoInorden(NodoArbol nodo, List<string> recorrido)
@@ -231,4 +233,7 @@ namespace ArbolBinario.Services
             return nodo;
         }
     }
+    
+
+
 }
